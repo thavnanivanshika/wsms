@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>WSMS – Test Cases</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:#0f172a; color:#f1f5f9; min-height:100vh; }
+
+  .header { background:linear-gradient(135deg,#1e293b,#0f172a); border-bottom:1px solid rgba(255,255,255,.08); padding:36px 60px; }
+  .header h1 { font-size:32px; font-weight:800; }
+  .header p  { font-size:16px; color:#94a3b8; margin-top:6px; }
+
+  .content { padding:40px 60px; max-width:1100px; }
+
+  /* Summary row */
+  .summary { display:flex; gap:16px; margin-bottom:44px; }
+  .sc { flex:1; background:#1e293b; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:20px 24px; text-align:center; }
+  .sc .n { font-size:40px; font-weight:800; color:#fbbf24; }
+  .sc .l { font-size:13px; color:#64748b; margin-top:4px; }
+
+  /* Section */
+  .section-title { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#475569; margin:40px 0 16px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.07); }
+
+  /* Test card */
+  .tc { background:#1e293b; border:1px solid rgba(255,255,255,.08); border-radius:16px; margin-bottom:14px; overflow:hidden; }
+  .tc-top { display:flex; align-items:center; gap:16px; padding:20px 24px; }
+  .tc-icon { font-size:32px; flex-shrink:0; }
+  .tc-name { font-size:17px; font-weight:700; flex:1; }
+  .tc-file { font-size:12px; color:#475569; font-family:monospace; margin-top:3px; }
+  .pass { background:rgba(52,211,153,.12); border:1px solid rgba(52,211,153,.25); color:#34d399; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:700; white-space:nowrap; }
+  .expect { background:rgba(248,113,113,.12); border:1px solid rgba(248,113,113,.25); color:#f87171; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:700; white-space:nowrap; }
+
+  .tc-bottom { border-top:1px solid rgba(255,255,255,.06); display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; }
+  .tc-cell { padding:16px 20px; border-right:1px solid rgba(255,255,255,.06); }
+  .tc-cell:last-child { border:none; }
+  .cell-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#475569; margin-bottom:6px; }
+  .cell-text { font-size:14px; color:#94a3b8; line-height:1.6; }
+  .cell-text strong { color:#f1f5f9; }
+
+  /* Info box */
+  .info { background:rgba(96,165,250,.07); border:1px solid rgba(96,165,250,.18); border-radius:12px; padding:16px 20px; margin-bottom:16px; font-size:15px; color:#94a3b8; line-height:1.6; }
+  .info strong { color:#f1f5f9; }
+
+  /* Not covered table */
+  table { width:100%; border-collapse:collapse; margin-top:8px; }
+  th { background:#263347; padding:11px 16px; text-align:left; font-size:11px; letter-spacing:.8px; text-transform:uppercase; color:#64748b; }
+  td { padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.05); font-size:14px; color:#94a3b8; vertical-align:top; }
+  td strong { color:#f1f5f9; }
+  tr:last-child td { border:none; }
+
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧪 WSMS — Test Cases</h1>
+  <p>What was tested, why it was tested, and what each test checks.</p>
+</div>
+
+<div class="content">
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <div class="sc"><div class="n">9</div><div class="l">Total Tests</div></div>
+    <div class="sc"><div class="n">3</div><div class="l">Test Files</div></div>
+    <div class="sc"><div class="n">9 / 9</div><div class="l">All Passing ✓</div></div>
+    <div class="sc"><div class="n">JUnit 5</div><div class="l">Framework Used</div></div>
+  </div>
+
+  <div class="info">
+    <strong>How testing works:</strong> All tests are <strong>unit tests</strong> — they test one piece of logic in isolation. Instead of using a real database, we use <strong>Mockito</strong> to create fake versions of the database so tests run fast. <strong>AssertJ</strong> is used to check the results are correct.
+  </div>
+
+  <!-- FILE 1 -->
+  <div class="section-title">File 1 — WsmsApplicationTests.java</div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">🚀</div>
+      <div>
+        <div class="tc-name">Application starts without errors</div>
+        <div class="tc-file">contextLoads()</div>
+      </div>
+      <span class="pass">✓ PASS</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">What it does</div>
+        <div class="cell-text">Starts the full Spring Boot app with all its parts wired together.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">The app boots with <strong>no errors or missing pieces</strong>.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">If any configuration is broken, this test fails immediately — before you even run the app.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 2 -->
+  <div class="section-title">File 2 — RequestServiceTest.java &nbsp;(core business logic)</div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">📝</div>
+      <div>
+        <div class="tc-name">Create a request successfully</div>
+        <div class="tc-file">createsSubmittedRequestWithLineItems()</div>
+      </div>
+      <span class="pass">✓ PASS</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">Employee has ₹5,000 budget. Requests 4 × Paper at ₹250 each = ₹1,000.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Status = <strong>SUBMITTED</strong>. Total = <strong>₹1,000</strong>. Email sent. History saved.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">Proves the basic "happy path" — normal request creation works correctly.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">📦</div>
+      <div>
+        <div class="tc-name">Block request when stock is not enough</div>
+        <div class="tc-file">rejectsWhenQuantityExceedsStock()</div>
+      </div>
+      <span class="expect">✗ Error expected</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">Stock has only <strong>100 units</strong>. Employee requests <strong>200 units</strong>.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Error thrown: <strong>"exceeds available stock"</strong>. No email is sent.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">Without this check, employees could request more than what exists in inventory.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">💰</div>
+      <div>
+        <div class="tc-name">Block request when budget is exceeded</div>
+        <div class="tc-file">rejectsWhenCostExceedsRemainingEligibility()</div>
+      </div>
+      <span class="expect">✗ Error expected</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">Only <strong>₹500 left</strong> in budget. Request costs <strong>₹1,000</strong>.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Error thrown mentioning <strong>"eligibility"</strong>. Request is blocked.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">The ₹5,000 cap is the core rule of the system. This test proves it cannot be bypassed.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">✅</div>
+      <div>
+        <div class="tc-name">Approving a request reduces stock</div>
+        <div class="tc-file">approveDecrementsStockAndSetsApproved()</div>
+      </div>
+      <span class="pass">✓ PASS</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">A submitted request for 4 × Paper. Stock = 100. Admin approves it.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Status = <strong>APPROVED</strong>. Stock drops from 100 → <strong>96</strong>.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">Stock must reduce on approval, otherwise the same items could be approved for many people.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">🚫</div>
+      <div>
+        <div class="tc-name">Cannot withdraw an already approved request</div>
+        <div class="tc-file">withdrawOnlyAllowedWhileSubmitted()</div>
+      </div>
+      <span class="expect">✗ Error expected</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">Request is already <strong>APPROVED</strong>. Employee tries to withdraw it.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Error thrown: <strong>"awaiting approval"</strong>. Withdrawal is blocked.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">Employees cannot undo the admin's decision. They must use the cancellation flow instead.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">🔄</div>
+      <div>
+        <div class="tc-name">Cancelling a request restores stock</div>
+        <div class="tc-file">confirmCancellationRestoresStock()</div>
+      </div>
+      <span class="pass">✓ PASS</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">Request was approved (stock at 96). Employee requested cancellation. Admin confirms.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Status = <strong>CANCELLED</strong>. Stock restored from 96 → <strong>100</strong>.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">When a request is cancelled, the items go back to inventory — otherwise stock drains forever.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILE 3 -->
+  <div class="section-title">File 3 — ReportServiceTest.java &nbsp;(analytics)</div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">📊</div>
+      <div>
+        <div class="tc-name">Report calculates cost and percentage correctly</div>
+        <div class="tc-file">aggregatesCostHeadCountAndPercentagesOverApprovedLineItems()</div>
+      </div>
+      <span class="pass">✓ PASS</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">2 users, 2 items. Alice + Bob buy Paper (₹1,000 total). Alice buys Pen (₹500). Grand total = ₹1,500.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Total = <strong>₹1,500</strong>. Paper = <strong>66.67%</strong>. Pen = <strong>33.33%</strong>. Head count = <strong>2</strong>.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">Admin makes decisions based on reports. If the maths is wrong, the admin sees false data.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">🗂️</div>
+      <div>
+        <div class="tc-name">One request with multiple items works correctly</div>
+        <div class="tc-file">multipleLineItemsInOneRequestAreAggregated()</div>
+      </div>
+      <span class="pass">✓ PASS</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">One request with 2 items: Paper×2 (₹500) + Pen×4 (₹200). Total = ₹700.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Report has <strong>2 lines</strong>. Total = <strong>₹700</strong>. Head count = <strong>1</strong>.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">WSMS allows one request to have many items. Report must handle that correctly.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc">
+    <div class="tc-top">
+      <div class="tc-icon">🕳️</div>
+      <div>
+        <div class="tc-name">Report is empty when no requests exist</div>
+        <div class="tc-file">emptyWhenNoApprovedRequests()</div>
+      </div>
+      <span class="pass">✓ PASS</span>
+    </div>
+    <div class="tc-bottom">
+      <div class="tc-cell">
+        <div class="cell-label">Setup</div>
+        <div class="cell-text">Zero approved requests in the system (fresh install).</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">What it checks</div>
+        <div class="cell-text">Lines = <strong>empty</strong>. Total = <strong>₹0</strong>. No crash or error.</div>
+      </div>
+      <div class="tc-cell">
+        <div class="cell-label">Why it matters</div>
+        <div class="cell-text">The report page must not crash when there's no data — edge case protection.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOT COVERED -->
+  <div class="section-title">What is NOT tested (honest limitations)</div>
+
+  <table>
+    <thead><tr><th>Not Covered</th><th>Why</th></tr></thead>
+    <tr><td><strong>Frontend (React)</strong></td><td>No Jest tests written — UI verified manually during demo</td></tr>
+    <tr><td><strong>REST endpoints</strong></td><td>No HTTP-layer tests — controllers tested indirectly via service tests</td></tr>
+    <tr><td><strong>JWT creation & validation</strong></td><td>Covered by the context load test; JwtUtil not tested separately</td></tr>
+    <tr><td><strong>Duplicate email/username check</strong></td><td>AuthService not unit tested — would need a separate test class</td></tr>
+    <tr><td><strong>Spend reset logic</strong></td><td>The eligibilityResetAt timestamp filter in ItemService is not tested</td></tr>
+  </table>
+
+  <p style="margin-top:48px;padding-bottom:48px;text-align:center;font-size:12px;color:#334155;">WSMS Test Cases · 2026</p>
+
+</div>
+</body>
+</html>

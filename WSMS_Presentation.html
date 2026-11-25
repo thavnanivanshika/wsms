@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>WSMS – Presentation</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:#0f172a; color:#fff; overflow:hidden; height:100vh; width:100vw; }
+
+  .slide { position:absolute; inset:0; display:none; flex-direction:column; justify-content:center; align-items:center; padding:60px 100px; text-align:center; }
+  .slide.active { display:flex; }
+
+  .s1 { background:linear-gradient(135deg,#0f172a,#1e3a5f); }
+  .s2 { background:linear-gradient(135deg,#1e3a8a,#2563eb); }
+  .s3 { background:linear-gradient(135deg,#1e293b,#334155); }
+  .s4 { background:linear-gradient(135deg,#2e1065,#6d28d9); }
+  .s5 { background:linear-gradient(135deg,#78350f,#d97706); }
+  .s6 { background:linear-gradient(135deg,#064e3b,#059669); }
+
+  .num { position:absolute; top:22px; right:36px; font-size:13px; opacity:.35; }
+
+  /* Title slide */
+  .logo { width:90px; height:90px; background:linear-gradient(135deg,#fbbf24,#f59e0b); border-radius:24px; display:flex; align-items:center; justify-content:center; font-size:44px; font-weight:900; color:#0f172a; margin:0 auto 28px; box-shadow:0 20px 60px rgba(251,191,36,.35); }
+  h1 { font-size:52px; font-weight:800; line-height:1.1; }
+  .sub { font-size:20px; opacity:.65; margin-top:16px; line-height:1.5; }
+
+  /* Section slides */
+  .label { font-size:12px; letter-spacing:2px; text-transform:uppercase; opacity:.5; margin-bottom:12px; }
+  h2 { font-size:42px; font-weight:800; margin-bottom:36px; }
+  .bar { width:60px; height:5px; background:#fbbf24; border-radius:3px; margin:16px auto 36px; }
+
+  /* Two column cards */
+  .cols { display:flex; gap:24px; width:100%; }
+  .box { flex:1; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); border-radius:18px; padding:28px 24px; text-align:left; }
+  .box-icon { font-size:40px; margin-bottom:14px; display:block; }
+  .box h3 { font-size:22px; font-weight:700; margin-bottom:16px; }
+  .box ul { list-style:none; display:flex; flex-direction:column; gap:11px; }
+  .box ul li { font-size:17px; opacity:.85; display:flex; gap:10px; align-items:flex-start; line-height:1.4; }
+  .box ul li::before { content:'✦'; color:#fbbf24; font-size:11px; margin-top:4px; flex-shrink:0; }
+
+  /* Tech pills */
+  .pills { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:4px; }
+  .pill { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:30px; padding:10px 22px; font-size:16px; font-weight:500; }
+  .pill.y { background:rgba(251,191,36,.2); border-color:rgba(251,191,36,.4); color:#fbbf24; font-weight:600; }
+
+  /* Arch boxes */
+  .arch { display:flex; align-items:center; justify-content:center; gap:0; margin-top:8px; }
+  .abox { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:16px; padding:22px 36px; text-align:center; }
+  .abox .ai { font-size:38px; margin-bottom:8px; }
+  .abox .an { font-size:16px; font-weight:700; }
+  .abox .ad { font-size:12px; opacity:.5; margin-top:4px; }
+  .aarrow { font-size:28px; color:#fbbf24; padding:0 16px; opacity:.8; }
+
+  /* Demo steps */
+  .steps { display:flex; gap:14px; width:100%; margin-top:4px; }
+  .step { flex:1; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); border-radius:16px; padding:20px 14px; }
+  .step .n { font-size:34px; font-weight:800; color:#fbbf24; }
+  .step .t { font-size:15px; font-weight:700; margin:6px 0 4px; }
+  .step .d { font-size:13px; opacity:.65; line-height:1.4; }
+
+  /* Nav */
+  .nav { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:16px; background:rgba(255,255,255,.1); backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,.18); border-radius:50px; padding:10px 26px; }
+  .nav button { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; opacity:.6; padding:4px 8px; transition:.15s; }
+  .nav button:hover { opacity:1; }
+  .prog { font-size:13px; opacity:.5; min-width:50px; text-align:center; }
+  .dots { display:flex; gap:7px; }
+  .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.25); cursor:pointer; transition:.2s; }
+  .dot.on { background:#fbbf24; transform:scale(1.4); }
+</style>
+</head>
+<body>
+
+<!-- 1. TITLE -->
+<div class="slide s1 active">
+  <div class="num">1 / 6</div>
+  <div class="logo">W</div>
+  <h1>Stationery Management<br>System</h1>
+  <div class="bar"></div>
+  <p class="sub">A web app that lets employees request stationery<br>and admins approve — fully digital, fully tracked.</p>
+  <p style="margin-top:32px;font-size:14px;opacity:.3;letter-spacing:.8px">Spring Boot · React · JWT · 2026</p>
+</div>
+
+<!-- 2. PROBLEM & SOLUTION -->
+<div class="slide s2">
+  <div class="num">2 / 6</div>
+  <div class="label">Why we built this</div>
+  <h2>Problem → Solution</h2>
+  <div class="cols">
+    <div class="box">
+      <span class="box-icon">❌</span>
+      <h3>Before</h3>
+      <ul>
+        <li>Paper forms — no central record</li>
+        <li>No budget limit — employees overspend</li>
+        <li>No way to track request status</li>
+        <li>No stock visibility</li>
+      </ul>
+    </div>
+    <div class="box" style="border-color:rgba(251,191,36,.4)">
+      <span class="box-icon">✅</span>
+      <h3>After — WSMS</h3>
+      <ul>
+        <li>Digital requests with live status</li>
+        <li>₹5,000 budget cap per employee</li>
+        <li>Admin approves or rejects online</li>
+        <li>Reports, history &amp; low stock alerts</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 3. TECH STACK -->
+<div class="slide s3">
+  <div class="num">3 / 6</div>
+  <div class="label">Technology used</div>
+  <h2>How it's built</h2>
+  <div class="arch" style="margin-bottom:32px">
+    <div class="abox">
+      <div class="ai">🖥️</div>
+      <div class="an">React Frontend</div>
+      <div class="ad">What you see · Port 5173</div>
+    </div>
+    <div class="aarrow">⟶</div>
+    <div class="abox">
+      <div class="ai">⚙️</div>
+      <div class="an">Spring Boot API</div>
+      <div class="ad">Business logic · Port 8080</div>
+    </div>
+    <div class="aarrow">⟶</div>
+    <div class="abox">
+      <div class="ai">🗄️</div>
+      <div class="an">H2 Database</div>
+      <div class="ad">Stores all data</div>
+    </div>
+  </div>
+  <div class="pills">
+    <span class="pill y">Java 21</span>
+    <span class="pill y">Spring Boot</span>
+    <span class="pill y">React 18</span>
+    <span class="pill">JWT Auth</span>
+    <span class="pill">Spring Security</span>
+    <span class="pill">Hibernate JPA</span>
+    <span class="pill">Vite</span>
+    <span class="pill">Axios</span>
+  </div>
+</div>
+
+<!-- 4. FEATURES -->
+<div class="slide s4">
+  <div class="num">4 / 6</div>
+  <div class="label">Who uses it</div>
+  <h2>Two Roles</h2>
+  <div class="cols">
+    <div class="box">
+      <span class="box-icon">👤</span>
+      <h3>Employee</h3>
+      <ul>
+        <li>Register &amp; log in</li>
+        <li>Browse stationery catalog</li>
+        <li>Check ₹5,000 budget</li>
+        <li>Submit requests</li>
+        <li>Track status &amp; cancel</li>
+      </ul>
+    </div>
+    <div class="box" style="border-color:rgba(251,191,36,.4)">
+      <span class="box-icon">⚡</span>
+      <h3>Admin</h3>
+      <ul>
+        <li>Approve or reject requests</li>
+        <li>Manage stationery items</li>
+        <li>Manage users &amp; reset budget</li>
+        <li>View reports &amp; history</li>
+        <li>Low stock alerts</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 5. DEMO -->
+<div class="slide s5">
+  <div class="num">5 / 6</div>
+  <div class="label">Live demonstration</div>
+  <h2>Demo Steps</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="n">1</div>
+      <div class="t">Register</div>
+      <div class="d">Create new employee account</div>
+    </div>
+    <div class="step">
+      <div class="n">2</div>
+      <div class="t">Login</div>
+      <div class="d">Get token, go to dashboard</div>
+    </div>
+    <div class="step">
+      <div class="n">3</div>
+      <div class="t">Check Budget</div>
+      <div class="d">See ₹5,000 eligibility</div>
+    </div>
+    <div class="step">
+      <div class="n">4</div>
+      <div class="t">Request</div>
+      <div class="d">Pick items &amp; submit</div>
+    </div>
+    <div class="step">
+      <div class="n">5</div>
+      <div class="t">Admin Approves</div>
+      <div class="d">Switch to admin, approve</div>
+    </div>
+    <div class="step">
+      <div class="n">6</div>
+      <div class="t">Reset Spend</div>
+      <div class="d">Admin restores budget</div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. THANK YOU -->
+<div class="slide s6">
+  <div class="num">6 / 6</div>
+  <div class="logo">W</div>
+  <h1>Thank You</h1>
+  <div class="bar"></div>
+  <p class="sub">Web-Based Stationery Management System</p>
+  <p style="margin-top:44px;font-size:24px;opacity:.5">Questions?</p>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button onclick="go(-1)">◀</button>
+  <div class="dots" id="dots"></div>
+  <span class="prog" id="prog">1 / 6</span>
+  <button onclick="go(1)">▶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const progEl = document.getElementById('prog');
+  const N = slides.length;
+  let cur = 0;
+  for (let i = 0; i < N; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot'+(i===0?' on':'');
+    d.onclick = ()=>show(i);
+    dotsEl.appendChild(d);
+  }
+  function show(n) {
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('on');
+    cur=(n+N)%N;
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('on');
+    progEl.textContent=(cur+1)+' / '+N;
+  }
+  function go(d){show(cur+d);}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' ')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>

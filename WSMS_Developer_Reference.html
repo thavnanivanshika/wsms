@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>WSMS – Developer Reference</title>
+<style>
+  :root {
+    --bg: #0f172a; --surface: #1e293b; --surface2: #263347;
+    --border: rgba(255,255,255,.1); --ink: #f1f5f9; --muted: #94a3b8;
+    --yellow: #fbbf24; --blue: #60a5fa; --green: #34d399;
+    --red: #f87171; --violet: #a78bfa; --teal: #2dd4bf;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+
+  /* Layout */
+  .wrap { display:flex; min-height:100vh; }
+  .toc  { width:260px; min-width:260px; background:var(--surface); border-right:1px solid var(--border); position:sticky; top:0; height:100vh; overflow-y:auto; padding:24px 0; }
+  .main { flex:1; padding:48px 60px; max-width:960px; }
+
+  /* TOC */
+  .toc-brand { padding:0 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px; }
+  .toc-brand .logo { width:38px; height:38px; background:linear-gradient(135deg,#fbbf24,#f59e0b); border-radius:10px; display:inline-flex; align-items:center; justify-content:center; font-weight:900; color:#0f172a; font-size:18px; margin-right:8px; vertical-align:middle; }
+  .toc-brand span { font-weight:700; font-size:15px; vertical-align:middle; }
+  .toc-section { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); padding:16px 20px 6px; }
+  .toc a { display:block; padding:7px 20px; font-size:13px; color:var(--muted); text-decoration:none; border-left:2px solid transparent; transition:.15s; }
+  .toc a:hover { color:var(--ink); background:rgba(255,255,255,.05); border-left-color:var(--yellow); }
+
+  /* Content */
+  h1 { font-size:32px; font-weight:800; margin-bottom:6px; }
+  h2 { font-size:22px; font-weight:700; margin:48px 0 16px; color:var(--yellow); display:flex; align-items:center; gap:10px; }
+  h2::before { content:''; display:block; width:4px; height:22px; background:var(--yellow); border-radius:2px; }
+  h3 { font-size:16px; font-weight:700; margin:24px 0 10px; color:var(--blue); }
+  p  { font-size:15px; color:var(--muted); margin-bottom:12px; line-height:1.7; }
+  strong { color:var(--ink); }
+  .hero-sub { font-size:16px; color:var(--muted); margin-bottom:32px; }
+
+  /* Cards */
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px 24px; margin-bottom:16px; }
+  .card-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+
+  /* Q&A */
+  .qa { border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:12px; }
+  .q  { background:var(--surface2); padding:14px 18px; font-size:14px; font-weight:700; color:var(--yellow); cursor:pointer; display:flex; justify-content:space-between; align-items:center; user-select:none; }
+  .q .arrow { transition:.2s; }
+  .a  { background:var(--surface); padding:16px 18px; font-size:14px; color:var(--muted); display:none; border-top:1px solid var(--border); }
+  .a.open { display:block; }
+  .a p { margin-bottom:8px; }
+  .a p:last-child { margin:0; }
+
+  /* Code */
+  code { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:5px; padding:1px 7px; font-family:'Cascadia Code','Fira Code',monospace; font-size:13px; color:var(--teal); }
+  pre  { background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:16px 20px; overflow-x:auto; font-family:'Cascadia Code','Fira Code',monospace; font-size:13px; color:#e2e8f0; line-height:1.6; margin:12px 0; }
+  pre .c  { color:#64748b; }
+  pre .k  { color:#c084fc; }
+  pre .s  { color:#86efac; }
+  pre .n  { color:#60a5fa; }
+  pre .a  { color:#fbbf24; }
+
+  /* File path */
+  .path { display:inline-flex; align-items:center; gap:6px; background:rgba(96,165,250,.1); border:1px solid rgba(96,165,250,.2); border-radius:6px; padding:3px 10px; font-size:12px; color:var(--blue); font-family:monospace; margin:4px 0; }
+  .path::before { content:'📄'; font-size:11px; }
+
+  /* Flow */
+  .flow { display:flex; align-items:center; flex-wrap:wrap; gap:0; margin:12px 0; }
+  .fstep { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-size:13px; font-weight:600; }
+  .fstep.hl  { border-color:rgba(251,191,36,.4); color:var(--yellow); }
+  .fstep.g   { border-color:rgba(52,211,153,.4);  color:var(--green); }
+  .fstep.r   { border-color:rgba(248,113,113,.4); color:var(--red); }
+  .farrow { color:var(--yellow); padding:0 8px; font-size:16px; }
+
+  /* Table */
+  table { width:100%; border-collapse:collapse; font-size:14px; margin:12px 0; }
+  th { background:var(--surface2); padding:10px 14px; text-align:left; font-size:12px; letter-spacing:.5px; text-transform:uppercase; color:var(--muted); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tr:last-child td { border:none; }
+
+  /* Badge */
+  .badge { display:inline-block; border-radius:16px; padding:2px 10px; font-size:12px; font-weight:600; margin:2px; }
+  .bg { background:rgba(52,211,153,.15); color:var(--green); border:1px solid rgba(52,211,153,.3); }
+  .bb { background:rgba(96,165,250,.15); color:var(--blue);  border:1px solid rgba(96,165,250,.3); }
+  .by { background:rgba(251,191,36,.15); color:var(--yellow);border:1px solid rgba(251,191,36,.3); }
+  .br { background:rgba(248,113,113,.15);color:var(--red);   border:1px solid rgba(248,113,113,.3); }
+
+  /* Tip box */
+  .tip  { background:rgba(52,211,153,.08);  border:1px solid rgba(52,211,153,.2);  border-radius:10px; padding:14px 18px; margin:14px 0; font-size:14px; }
+  .warn { background:rgba(251,191,36,.08);  border:1px solid rgba(251,191,36,.2);  border-radius:10px; padding:14px 18px; margin:14px 0; font-size:14px; }
+  .info { background:rgba(96,165,250,.08);  border:1px solid rgba(96,165,250,.2);  border-radius:10px; padding:14px 18px; margin:14px 0; font-size:14px; }
+
+  /* Divider */
+  hr { border:none; border-top:1px solid var(--border); margin:40px 0; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(255,255,255,.15); border-radius:3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════════════ SIDEBAR TOC ═══════════════════ -->
+<nav class="toc">
+  <div class="toc-brand"><div class="logo">W</div><span>WSMS Ref</span></div>
+
+  <div class="toc-section">Overview</div>
+  <a href="#what">What is this project?</a>
+  <a href="#structure">Folder structure</a>
+  <a href="#flow">How a request flows</a>
+
+  <div class="toc-section">Backend</div>
+  <a href="#spring">Spring Boot basics</a>
+  <a href="#security">Security &amp; JWT</a>
+  <a href="#db">Database &amp; models</a>
+  <a href="#controllers">Controllers</a>
+  <a href="#services">Services</a>
+  <a href="#validation">Validation</a>
+
+  <div class="toc-section">Frontend</div>
+  <a href="#react">React basics</a>
+  <a href="#routing">Routing &amp; auth guard</a>
+  <a href="#api">API calls (Axios)</a>
+  <a href="#state">State management</a>
+
+  <div class="toc-section">Key Logic</div>
+  <a href="#eligibility">Eligibility calculation</a>
+  <a href="#lifecycle">Request lifecycle</a>
+  <a href="#reset">Spend reset</a>
+  <a href="#roles">Roles &amp; permissions</a>
+
+  <div class="toc-section">Q &amp; A</div>
+  <a href="#qa">Common questions</a>
+</nav>
+
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+<main class="main">
+
+  <h1>WSMS — Developer Reference</h1>
+  <p class="hero-sub">Everything you need to answer any question about this project. Written in simple English.</p>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="what">What is this project?</h2>
+
+  <p>WSMS is a <strong>web application</strong> that lets company employees request stationery items (pens, paper, etc.) from an admin. Think of it like an internal Amazon — employees browse items, request what they need, and an admin approves or rejects the request.</p>
+
+  <div class="card-row">
+    <div class="card">
+      <h3>Frontend (React)</h3>
+      <p>The part users see in their browser. Built with React 18 + Vite. Runs on <strong>port 5173</strong>. This is just HTML/CSS/JavaScript that talks to the backend.</p>
+    </div>
+    <div class="card">
+      <h3>Backend (Spring Boot)</h3>
+      <p>The brain of the app. Written in Java. Handles business logic, talks to the database, and exposes a REST API. Runs on <strong>port 8080</strong>.</p>
+    </div>
+  </div>
+
+  <div class="tip">💡 <strong>Simple analogy:</strong> The frontend is the menu at a restaurant. The backend is the kitchen. When you click a button (place order), the frontend sends a request to the backend (kitchen makes food) which talks to the database (pantry) and sends back data.</div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="structure">Folder Structure</h2>
+
+  <div class="card-row">
+    <div class="card">
+      <h3>Backend <span class="path">backend/src/main/java/com/wsms/</span></h3>
+      <table>
+        <tr><td><code>controller/</code></td><td>Receives HTTP requests, calls services</td></tr>
+        <tr><td><code>service/</code></td><td>Business logic lives here</td></tr>
+        <tr><td><code>model/</code></td><td>Database table definitions (entities)</td></tr>
+        <tr><td><code>repository/</code></td><td>Database queries (Spring Data JPA)</td></tr>
+        <tr><td><code>dto/</code></td><td>Data Transfer Objects — what gets sent/received over the API</td></tr>
+        <tr><td><code>security/</code></td><td>JWT filter, user details service</td></tr>
+        <tr><td><code>config/</code></td><td>Security config, CORS, seed data</td></tr>
+        <tr><td><code>exception/</code></td><td>Custom errors and global error handler</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Frontend <span class="path">frontend/src/</span></h3>
+      <table>
+        <tr><td><code>pages/</code></td><td>One file per screen (Login, Register, Dashboard…)</td></tr>
+        <tr><td><code>components/</code></td><td>Reusable UI pieces (Layout, Icons)</td></tr>
+        <tr><td><code>api/client.js</code></td><td>Axios setup — all HTTP calls go through here</td></tr>
+        <tr><td><code>auth/AuthContext.jsx</code></td><td>Who is logged in, stored in React Context</td></tr>
+        <tr><td><code>App.jsx</code></td><td>Route definitions (which URL shows which page)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="flow">How a Request Flows (End to End)</h2>
+
+  <p>When a user clicks "Submit Request" this is exactly what happens, step by step:</p>
+
+  <div class="flow">
+    <div class="fstep hl">1. User clicks Submit</div><span class="farrow">→</span>
+    <div class="fstep">React calls <code>client.post('/requests')</code></div><span class="farrow">→</span>
+    <div class="fstep">Axios adds JWT token to header</div><span class="farrow">→</span>
+    <div class="fstep">HTTP POST hits Spring Boot port 8080</div>
+  </div>
+  <div class="flow" style="margin-top:8px">
+    <div class="fstep">JwtFilter validates token</div><span class="farrow">→</span>
+    <div class="fstep"><code>RequestController.create()</code></div><span class="farrow">→</span>
+    <div class="fstep"><code>RequestService.create()</code> checks stock &amp; budget</div><span class="farrow">→</span>
+    <div class="fstep">Saves to H2 DB</div><span class="farrow">→</span>
+    <div class="fstep g">Returns RequestDto JSON</div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="spring">Spring Boot Basics</h2>
+
+  <p>Spring Boot is a Java framework that makes building REST APIs easy. Here's how the layers work:</p>
+
+  <table>
+    <thead><tr><th>Annotation</th><th>What it does</th><th>Example file</th></tr></thead>
+    <tr><td><code>@RestController</code></td><td>This class handles HTTP requests and returns JSON</td><td><code>RequestController.java</code></td></tr>
+    <tr><td><code>@GetMapping</code></td><td>This method handles HTTP GET requests</td><td><code>GET /api/items</code></td></tr>
+    <tr><td><code>@PostMapping</code></td><td>This method handles HTTP POST requests</td><td><code>POST /api/requests</code></td></tr>
+    <tr><td><code>@Service</code></td><td>This class contains business logic</td><td><code>ItemService.java</code></td></tr>
+    <tr><td><code>@Repository</code></td><td>This interface talks to the database</td><td><code>UserRepository.java</code></td></tr>
+    <tr><td><code>@Entity</code></td><td>This class maps to a database table</td><td><code>User.java</code></td></tr>
+    <tr><td><code>@Column</code></td><td>This field maps to a table column</td><td><code>username</code> in User</td></tr>
+    <tr><td><code>@ManyToOne</code></td><td>Many users belong to one department</td><td>User → Department</td></tr>
+  </table>
+
+  <div class="info">ℹ️ <strong>Why Spring Boot?</strong> It auto-configures everything — no XML needed. Write a class with the right annotation and Spring wires it up automatically. This is called "Dependency Injection" — Spring creates and injects objects so you don't have to use <code>new</code> everywhere.</div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="security">Security &amp; JWT</h2>
+
+  <h3>What is JWT?</h3>
+  <p>JWT (JSON Web Token) is like a <strong>digital ID card</strong>. When you log in, the server gives you a token (a long string). Every time you make a request, you show that token. The server checks it without needing to look up the database every time.</p>
+
+  <div class="card">
+    <h3>Login flow — where is the code?</h3>
+    <div class="flow">
+      <div class="fstep hl">POST /api/auth/login</div><span class="farrow">→</span>
+      <div class="fstep"><span class="path">AuthController.java</span></div><span class="farrow">→</span>
+      <div class="fstep"><span class="path">AuthService.java</span> checks password</div><span class="farrow">→</span>
+      <div class="fstep"><span class="path">JwtUtil.java</span> creates token</div><span class="farrow">→</span>
+      <div class="fstep g">Returns token to browser</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0">
+    <h3>Every request after login — where is the code?</h3>
+    <div class="flow">
+      <div class="fstep hl">Any API call</div><span class="farrow">→</span>
+      <div class="fstep"><span class="path">JwtFilter.java</span> reads <code>Authorization: Bearer &lt;token&gt;</code></div><span class="farrow">→</span>
+      <div class="fstep"><span class="path">JwtUtil.isValid()</span></div><span class="farrow">→</span>
+      <div class="fstep">Sets user in Spring's SecurityContext</div><span class="farrow">→</span>
+      <div class="fstep g">Controller runs</div>
+    </div>
+    <p style="margin-top:12px;font-size:13px">If token is missing or invalid → Spring Security blocks it and returns <strong>401 Unauthorized</strong> automatically.</p>
+  </div>
+
+  <h3>Where is the token stored?</h3>
+  <p>In the browser's <strong>localStorage</strong>. File: <span class="path">frontend/src/api/client.js</span> — the Axios interceptor reads it and adds it to every request automatically.</p>
+
+  <pre><span class="c">// client.js — adds token to every request automatically</span>
+<span class="n">client</span>.interceptors.request.use((config) => {
+  <span class="k">const</span> token = localStorage.getItem(<span class="s">'wsms_token'</span>);
+  <span class="k">if</span> (token) config.headers.Authorization = <span class="s">`Bearer ${token}`</span>;
+  <span class="k">return</span> config;
+});</pre>
+
+  <h3>What happens if the server restarts?</h3>
+  <p>H2 database resets on restart — the user is gone from DB but the browser still has the old token. <span class="path">JwtFilter.java</span> catches this and returns a clean 401 instead of a 500 error. The frontend's 401 interceptor then clears the token and redirects to login.</p>
+
+  <h3>How is the Admin role enforced?</h3>
+  <p>In <span class="path">SecurityConfig.java</span>: all URLs under <code>/api/manager/**</code> require <code>ROLE_MANAGER</code>. Regular users who try to access those endpoints get a 403 Forbidden response — the code never even runs.</p>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="db">Database &amp; Models</h2>
+
+  <h3>Why H2?</h3>
+  <p>H2 is an <strong>in-memory database</strong> — it lives in RAM, not on disk. It's perfect for development because it auto-creates tables from Java classes (no SQL scripts needed) and resets cleanly on every restart.</p>
+
+  <div class="warn">⚠️ <strong>Important:</strong> Because H2 is in-memory, all data is lost when the Spring Boot server stops. This is fine for a demo/college project. For production you'd use PostgreSQL or MySQL.</div>
+
+  <h3>How are tables created?</h3>
+  <p>No SQL scripts. Hibernate reads the <code>@Entity</code> classes and creates tables automatically. The annotation <code>@Column(nullable=false, unique=true)</code> enforces constraints at the database level.</p>
+
+  <table>
+    <thead><tr><th>Table (Entity)</th><th>Key Columns</th><th>File</th></tr></thead>
+    <tr><td><strong>users</strong></td><td>id, username, email, passwordHash, role_id, department_id, eligibilityResetAt</td><td><span class="path">model/User.java</span></td></tr>
+    <tr><td><strong>roles</strong></td><td>id, name (USER or MANAGER)</td><td><span class="path">model/Role.java</span></td></tr>
+    <tr><td><strong>departments</strong></td><td>id, name, code</td><td><span class="path">model/Department.java</span></td></tr>
+    <tr><td><strong>categories</strong></td><td>id, name, description</td><td><span class="path">model/Category.java</span></td></tr>
+    <tr><td><strong>stationery_items</strong></td><td>id, name, unit, unitPrice, stockQty, category_id</td><td><span class="path">model/StationeryItem.java</span></td></tr>
+    <tr><td><strong>stationery_requests</strong></td><td>id, requestor_id, status, totalCost, createdAt</td><td><span class="path">model/StationeryRequest.java</span></td></tr>
+    <tr><td><strong>request_lines</strong></td><td>id, request_id, item_id, quantity, unitPrice, lineTotal</td><td><span class="path">model/RequestLine.java</span></td></tr>
+  </table>
+
+  <h3>How is the password stored?</h3>
+  <p>Never in plain text. Spring Security's <code>BCryptPasswordEncoder</code> hashes it. When you log in, it hashes what you typed and compares hashes — the original password is never stored or compared directly.</p>
+  <p>Where: <span class="path">service/AuthService.java</span> — <code>passwordEncoder.encode(dto.getPassword())</code></p>
+
+  <h3>What is seeded at startup?</h3>
+  <p>File: <span class="path">config/DataInitializer.java</span> — runs once when Spring Boot starts and inserts:</p>
+  <ul style="list-style:disc;padding-left:20px;margin:8px 0;font-size:14px;color:var(--muted)">
+    <li>2 roles: USER and MANAGER</li>
+    <li>1 designation: Lecturer (₹5000 cap)</li>
+    <li>1 department: Computer Science</li>
+    <li>5 stationery items (pen, paper, etc.)</li>
+    <li>1 admin user: manager / manager123</li>
+    <li>1 regular user: user / user123</li>
+  </ul>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="controllers">Controllers — What URL Does What</h2>
+
+  <table>
+    <thead><tr><th>Controller File</th><th>URL Prefix</th><th>Who Can Access</th></tr></thead>
+    <tr><td><span class="path">AuthController.java</span></td><td><code>/api/auth/**</code></td><td>Everyone (no login needed)</td></tr>
+    <tr><td><span class="path">MetaController.java</span></td><td><code>/api/meta</code></td><td>Everyone (for registration form)</td></tr>
+    <tr><td><span class="path">UserController.java</span></td><td><code>/api/**</code> (items, eligibility, requests)</td><td>Logged-in users only</td></tr>
+    <tr><td><span class="path">ManagerController.java</span></td><td><code>/api/manager/**</code></td><td>MANAGER role only</td></tr>
+  </table>
+
+  <div class="info">ℹ️ <strong>What does a controller do exactly?</strong> It's just a "receiver". It takes the HTTP request, extracts the data, calls a service to do the actual work, and returns the result as JSON. Controllers have zero business logic.</div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="services">Services — Where the Logic Lives</h2>
+
+  <table>
+    <thead><tr><th>Service File</th><th>What it does</th></tr></thead>
+    <tr><td><span class="path">service/AuthService.java</span></td><td>Register new user (hashes password, assigns USER role, saves to DB), login (checks password, creates JWT)</td></tr>
+    <tr><td><span class="path">service/ItemService.java</span></td><td>CRUD for stationery items. Also calculates eligibility — this is the most important method.</td></tr>
+    <tr><td><span class="path">service/RequestService.java</span></td><td>Create requests (checks stock + budget), approve, reject, withdraw, cancel. All status transitions.</td></tr>
+    <tr><td><span class="path">service/ReportService.java</span></td><td>Builds spending analytics — total cost per item, quantity, percentage of total.</td></tr>
+    <tr><td><span class="path">service/MetaService.java</span></td><td>Returns departments and categories for the registration form dropdowns.</td></tr>
+  </table>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="validation">Validation — How Errors Are Handled</h2>
+
+  <h3>Backend validation (2 layers)</h3>
+  <p><strong>Layer 1 — Bean Validation:</strong> Annotations on DTOs like <code>@NotBlank</code>, <code>@Size(min=8)</code>, <code>@Email</code>. Spring checks these automatically before the method runs. File: <span class="path">dto/RegisterRequest.java</span> etc.</p>
+  <p><strong>Layer 2 — Business rules:</strong> Things Bean Validation can't check — like "is there enough stock?" or "is budget exceeded?" — are checked in the Service classes and throw <code>ApiException</code>.</p>
+
+  <pre><span class="c">// If validation fails, GlobalExceptionHandler.java catches it and returns:</span>
+{
+  <span class="s">"status"</span>: 400,
+  <span class="s">"message"</span>: <span class="s">"Validation failed"</span>,
+  <span class="s">"errors"</span>: { <span class="s">"password"</span>: <span class="s">"size must be between 8 and 100"</span> }
+}</pre>
+
+  <h3>Frontend validation</h3>
+  <p>Basic checks before even sending to server — password length, confirm match, required fields. File: <span class="path">pages/Register.jsx</span> validate() function.</p>
+
+  <h3>How are duplicate username/email caught?</h3>
+  <p>In <span class="path">AuthService.java</span>: before saving, it checks if the username/email already exists. If yes, it throws <code>ApiException.conflictField("username", "already taken")</code> which returns a <strong>409 Conflict</strong> with a field-level error so the red message appears directly under the input field.</p>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="react">React Frontend Basics</h2>
+
+  <p><strong>React</strong> is a JavaScript library for building UIs. Instead of HTML pages, you write components (functions that return HTML-like JSX). When data changes, React automatically updates only the parts of the page that need to change.</p>
+
+  <table>
+    <thead><tr><th>Concept</th><th>What it means</th><th>Used in</th></tr></thead>
+    <tr><td><code>useState</code></td><td>Store a value that, when changed, re-renders the component</td><td>Form inputs, loading states</td></tr>
+    <tr><td><code>useEffect</code></td><td>Run code when the component first loads (like fetching data)</td><td>All pages that load data</td></tr>
+    <tr><td><code>useContext</code></td><td>Read global data (like "who is logged in") from anywhere</td><td><code>useAuth()</code> in every page</td></tr>
+    <tr><td><code>useSearchParams</code></td><td>Read the URL query string (<code>?tab=users</code>)</td><td><code>AdminPortal.jsx</code></td></tr>
+    <tr><td>Props</td><td>Data passed from parent to child component</td><td>All over</td></tr>
+  </table>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="routing">Routing &amp; Auth Guard</h2>
+
+  <p>React Router is used so different URLs show different pages — but it's all still one HTML file (Single Page Application).</p>
+
+  <p>File: <span class="path">App.jsx</span> — defines all routes. Protected routes use <code>&lt;PrivateRoute&gt;</code> which checks if the user is logged in. If not, it redirects to <code>/login</code>.</p>
+
+  <pre><span class="c">// App.jsx — simplified</span>
+&lt;<span class="n">Routes</span>&gt;
+  &lt;<span class="n">Route</span> path=<span class="s">"/login"</span> element={&lt;<span class="n">Login</span>/&gt;} /&gt;
+  &lt;<span class="n">Route</span> element={&lt;<span class="n">PrivateRoute</span>/&gt;}&gt;         <span class="c">// must be logged in</span>
+    &lt;<span class="n">Route</span> element={&lt;<span class="n">Layout</span>/&gt;}&gt;             <span class="c">// shows sidebar</span>
+      &lt;<span class="n">Route</span> path=<span class="s">"/"</span> element={&lt;<span class="n">Dashboard</span>/&gt;} /&gt;
+      &lt;<span class="n">Route</span> path=<span class="s">"/admin"</span> element={&lt;<span class="n">AdminPortal</span>/&gt;} /&gt;
+    &lt;/&gt;
+  &lt;/&gt;
+&lt;/&gt;</pre>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="api">API Calls (Axios)</h2>
+
+  <p>All HTTP calls go through <span class="path">api/client.js</span>. It's an Axios instance with two interceptors:</p>
+  <ul style="list-style:disc;padding-left:20px;margin:8px 0;font-size:14px;color:var(--muted)">
+    <li><strong>Request interceptor:</strong> Automatically adds the JWT token to every outgoing request</li>
+    <li><strong>Response interceptor:</strong> If any response returns 401, it clears the token and redirects to /login</li>
+  </ul>
+
+  <pre><span class="c">// How pages call the API — example from AdminPortal.jsx</span>
+<span class="k">const</span> res = <span class="k">await</span> <span class="n">client</span>.get(<span class="s">'/manager/users'</span>);  <span class="c">// GET /api/manager/users</span>
+<span class="k">const</span> res = <span class="k">await</span> <span class="n">client</span>.post(<span class="s">'/requests'</span>, data);  <span class="c">// POST /api/requests</span>
+<span class="k">const</span> res = <span class="k">await</span> <span class="n">client</span>.put(<span class="s">`/manager/users/${id}/role`</span>, body);</pre>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="state">State Management</h2>
+
+  <p>No Redux. State is kept simple:</p>
+  <ul style="list-style:disc;padding-left:20px;margin:8px 0;font-size:14px;color:var(--muted)">
+    <li><strong>Auth state</strong> (user, token) → React Context in <span class="path">auth/AuthContext.jsx</span></li>
+    <li><strong>Page data</strong> (list of items, users, etc.) → local <code>useState</code> inside each page</li>
+    <li><strong>Active admin tab</strong> → URL query param (<code>?tab=users</code>) via <code>useSearchParams</code> — this is the URL-driven state approach</li>
+  </ul>
+
+  <div class="tip">💡 <strong>Why URL for tab state?</strong> If you use <code>useState</code> for the active tab, clicking the sidebar changes the URL but React doesn't re-read it because the component is already mounted. Using <code>useSearchParams()</code> directly means every URL change automatically reflects in the tab — and browser back/forward also works.</div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="eligibility">Eligibility Calculation — The Core Logic</h2>
+
+  <p>File: <span class="path">service/ItemService.java</span> — methods <code>eligibilityFor()</code> and <code>committedValue()</code></p>
+
+  <div class="card">
+    <h3>How is "remaining budget" calculated?</h3>
+    <p>It's NOT stored in the database. It's calculated fresh every time someone checks their eligibility:</p>
+    <pre><span class="c">// Step 1: Get the user's max cap (₹5000, from their designation)</span>
+BigDecimal cap = user.getMaxPurchaseValue();  <span class="c">// ₹5000</span>
+
+<span class="c">// Step 2: Sum up all ACTIVE requests (ones that "use up" budget)</span>
+BigDecimal committed = requestRepository
+  .findByRequestorOrderByCreatedAtDesc(user).stream()
+  .filter(r -> <span class="n">isCommitted</span>(r.getStatus()))   <span class="c">// SUBMITTED / APPROVED / CANCEL_REQUESTED</span>
+  .filter(r -> resetAt == null || r.getCreatedAt().isAfter(resetAt))
+  .map(StationeryRequest::getTotalCost)
+  .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+<span class="c">// Step 3: Subtract</span>
+BigDecimal remaining = cap.subtract(committed);  <span class="c">// ₹5000 - ₹1250 = ₹3750</span></pre>
+    <p><strong>Why SUBMITTED + APPROVED + CANCEL_REQUESTED?</strong> Because the money is "promised" for these. REJECTED and WITHDRAWN don't count — that budget is freed up.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="lifecycle">Request Lifecycle — All Status Transitions</h2>
+
+  <p>File: <span class="path">service/RequestService.java</span></p>
+
+  <table>
+    <thead><tr><th>Action</th><th>Method</th><th>Who</th><th>What happens</th></tr></thead>
+    <tr><td>Submit request</td><td><code>create()</code></td><td>Employee</td><td>Checks stock ≥ quantity, checks budget not exceeded, sets status = SUBMITTED, reduces stock</td></tr>
+    <tr><td>Approve</td><td><code>approve()</code></td><td>Admin</td><td>Sets status = APPROVED. Stock was already reduced at submit time.</td></tr>
+    <tr><td>Reject</td><td><code>reject()</code></td><td>Admin</td><td>Sets status = REJECTED. Restores the stock quantity back.</td></tr>
+    <tr><td>Withdraw</td><td><code>withdraw()</code></td><td>Employee</td><td>Only if status = SUBMITTED. Sets status = WITHDRAWN. Restores stock.</td></tr>
+    <tr><td>Cancel request</td><td><code>requestCancellation()</code></td><td>Employee</td><td>Only if status = APPROVED. Sets status = CANCEL_REQUESTED.</td></tr>
+    <tr><td>Confirm cancel</td><td><code>confirmCancellation()</code></td><td>Admin</td><td>Sets status = CANCELLED. Restores stock.</td></tr>
+  </table>
+
+  <div class="warn">⚠️ <strong>Ownership check:</strong> An employee can only withdraw their OWN requests. <code>RequestService</code> checks <code>request.getRequestor().equals(currentUser)</code> before allowing the action.</div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="reset">Spend Reset — How It Works Without Deleting Data</h2>
+
+  <p>File: <span class="path">model/User.java</span> — field <code>eligibilityResetAt</code> (Instant, nullable)</p>
+
+  <div class="card">
+    <p>When an admin clicks "Reset Spend", the endpoint <code>POST /api/manager/users/{id}/reset-spend</code> in <span class="path">ManagerController.java</span> sets <code>user.eligibilityResetAt = Instant.now()</code> and saves the user.</p>
+    <p>Then in <code>committedValue()</code> in <span class="path">ItemService.java</span>:</p>
+    <pre>.filter(r -> user.getEligibilityResetAt() == null
+        || r.getCreatedAt().isAfter(user.getEligibilityResetAt()))</pre>
+    <p>This means: <strong>"only count requests created AFTER the reset timestamp"</strong>. Old requests still exist in the DB — they just don't count toward the budget anymore. No data is deleted.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="roles">Roles &amp; Permissions — Where Every Check Happens</h2>
+
+  <table>
+    <thead><tr><th>Check</th><th>Where</th><th>How</th></tr></thead>
+    <tr><td>Admin-only API endpoints</td><td><span class="path">config/SecurityConfig.java</span></td><td><code>.requestMatchers("/api/manager/**").hasRole("MANAGER")</code></td></tr>
+    <tr><td>Hide admin routes in UI</td><td><span class="path">App.jsx</span></td><td>AdminRoute checks <code>user.role === 'MANAGER'</code></td></tr>
+    <tr><td>Hide admin sidebar links</td><td><span class="path">components/Layout.jsx</span></td><td><code>{isAdmin && ...}</code> JSX conditional</td></tr>
+    <tr><td>Admin cannot change own role</td><td><span class="path">ManagerController.java</span></td><td><code>if (me.getId().equals(id)) throw ...</code></td></tr>
+    <tr><td>Promote/demote user</td><td><span class="path">ManagerController.java</span></td><td>Fetches Role by name from DB, sets on user, saves</td></tr>
+  </table>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════════════ -->
+  <h2 id="qa">Common Questions — Ready Answers</h2>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">What design pattern did you follow? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p><strong>MVC (Model-View-Controller)</strong> — but adapted for REST APIs. Model = Entity classes. Controller = REST controllers. View = React frontend. We also use the <strong>Repository pattern</strong> (Spring Data JPA handles all DB queries) and <strong>DTO pattern</strong> (we never expose internal model objects directly — we convert to DTOs first).</p>
+      <p><strong>Service layer</strong> separates business logic from HTTP handling. Controllers just call services — they don't do any business logic themselves.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">Why use JWT instead of sessions? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>Sessions store state on the server — the server must remember who is logged in. JWT is <strong>stateless</strong> — the token itself contains everything the server needs (username, role, expiry). The server doesn't need to store anything.</p>
+      <p>This makes the app <strong>scalable</strong> — if you run multiple backend instances, every instance can verify any token without shared session storage.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">How is the frontend and backend connected? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>They are completely separate applications running on different ports. The frontend (React, port 5173) makes HTTP requests to the backend (Spring Boot, port 8080) using Axios.</p>
+      <p>CORS (Cross-Origin Resource Sharing) is configured in <span class="path">config/SecurityConfig.java</span> to allow the frontend to call the backend across ports. Without CORS config, the browser would block the requests.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">What is a DTO and why use it? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>DTO = Data Transfer Object. It's a simple class that holds only the data you want to send over the API — not the full database entity.</p>
+      <p>Example: <code>User</code> entity has <code>passwordHash</code>. We never want to send that over the API. So <code>UserSummaryDto</code> has only <code>id, username, email, department, role</code>. This separates the API contract from the internal database structure.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">What happens if two users request the last item at the same time? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>In <span class="path">RequestService.java</span>, before saving the request, the code checks <code>item.getStockQty() &lt; requestedQuantity</code>. If stock is insufficient, it throws an error.</p>
+      <p>In a production system, you'd use database-level locking (<code>SELECT FOR UPDATE</code>) to prevent race conditions. For this college project, the H2 in-memory DB processes requests sequentially enough that it isn't an issue, but it's a valid point to mention as a limitation.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">Where is the ₹5000 limit stored? Can it be changed per user? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>The ₹5000 limit is stored in the <code>Designation</code> entity (<code>maxPurchaseValue</code> field). Every user is assigned the "Lecturer" designation which has a ₹5000 value. This design means the limit could theoretically be different per designation — but currently all users share the same one.</p>
+      <p>The remaining budget is <strong>not stored</strong> — it's calculated at runtime by <code>ItemService.eligibilityFor()</code> every time the user visits the Eligibility page.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">How does the admin tab navigation work? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>The active tab is stored in the URL as a query parameter: <code>/admin?tab=users</code>. When you click a tab or sidebar link, it calls <code>setSearchParams({ tab: 'users' })</code> which updates the URL.</p>
+      <p>The component reads the tab from <code>useSearchParams()</code> — a React Router hook. Because it reads directly from the URL (not from useState), every URL change triggers a re-render with the correct tab. This also makes browser back/forward work correctly.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">What is Bean Validation? How does validation work in Spring Boot? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>Bean Validation (Jakarta Validation) is a standard that lets you annotate Java class fields with rules. Example: <code>@Size(min=8)</code> on <code>password</code>.</p>
+      <p>When a controller method has <code>@Valid</code> before the <code>@RequestBody</code> parameter, Spring automatically validates the incoming JSON against those rules before the method runs. If validation fails, Spring calls <code>GlobalExceptionHandler.handleValidation()</code> which returns a 400 error with field-level messages.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">Why does the app break after restarting the backend? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>Because H2 is in-memory — the entire database resets on restart. Any users who were registered are gone.</p>
+      <p>The browser still has the old JWT token in localStorage. When it tries to make a request, the token is cryptographically valid but the user doesn't exist in the DB anymore. <span class="path">JwtFilter.java</span> catches the resulting <code>UsernameNotFoundException</code> and returns a 401. The frontend's Axios interceptor sees the 401 and redirects to login, clearing the stale token.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">What is CORS and why is it needed? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>Browsers block JavaScript from making requests to a different origin (domain + port) than the page it's on. This is a browser security feature.</p>
+      <p>Our frontend is at <code>http://localhost:5173</code> and backend at <code>http://localhost:8080</code> — different ports = different origins. CORS config in <span class="path">SecurityConfig.java</span> tells the backend to send headers that say "I allow requests from port 5173" so the browser allows them.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">What is the difference between @RestController and @Controller? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p><code>@Controller</code> is for returning HTML views (like in traditional MVC with Thymeleaf). <code>@RestController</code> = <code>@Controller</code> + <code>@ResponseBody</code> — it means every method automatically converts its return value to JSON. Since we're building a REST API (not serving HTML from the backend), we use <code>@RestController</code> everywhere.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">How does the low stock feature work? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>In <span class="path">ManagerController.java</span>, the <code>allItems()</code> method returns all stationery items. The frontend's <code>LowStockTab</code> in <span class="path">AdminPortal.jsx</span> filters them client-side: items where <code>stockQty &lt;= 5</code> are shown as low stock. No separate backend endpoint needed — just filter the existing data in the frontend.</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q" onclick="toggle(this)">How are reports generated? <span class="arrow">▼</span></div>
+    <div class="a">
+      <p>File: <span class="path">service/ReportService.java</span>. It fetches all APPROVED requests, groups the lines by item name, and calculates total quantity and total cost per item. It also computes the percentage of total spend. This is returned as a <code>ReportDto</code> and displayed in the Reports tab as a table.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:48px;text-align:center;font-size:13px;opacity:.35">WSMS Developer Reference · Generated for presentation prep · 2026</p>
+
+</main>
+</div>
+
+<script>
+function toggle(el) {
+  const a = el.nextElementSibling;
+  const arrow = el.querySelector('.arrow');
+  a.classList.toggle('open');
+  arrow.textContent = a.classList.contains('open') ? '▲' : '▼';
+}
+// Smooth scroll for TOC links
+document.querySelectorAll('.toc a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const id = a.getAttribute('href').slice(1);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
